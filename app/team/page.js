@@ -4,12 +4,13 @@ import axios from 'axios';
 import React , {useState, useEffect} from "react";
 import ReactPaginate from 'react-paginate';
 import { gsap } from 'gsap';
+import { useRouter } from 'next/navigation'
 
 export default function Team() {
     const navigation = [
-        { name: 'Home', href: '/test' },
-        { name: 'About Us', href: '#' },
-        { name: 'Contact Us', href: '#' },
+        { name: 'Home', href: '/content' },
+        { name: 'About Us', href: '/about' },
+        { name: 'Contact Us', href: '/contact' },
         { name: 'Our Partners', href: '/team' },
       ]
 
@@ -17,8 +18,13 @@ export default function Team() {
       const [pageNumber, setPageNumber] = useState(0);
       const usersPerPage = 8;
       const pagesVisited = pageNumber * usersPerPage;
-
       const [spoken, setSpoken] = useState(false);
+      const router = useRouter();
+
+
+      const handleSignIn = () => {
+        router.push('/signin'); 
+      };
 
        // get all approved user 
        useEffect(() => {
@@ -46,7 +52,7 @@ export default function Team() {
 
    // animation parag
     useEffect(() => {
-        const tl = gsap.timeline({ defaults: { duration: 0.3, ease: 'power1.out' } });
+        const tl = gsap.timeline({ defaults: { duration: 0.05, ease: 'power1.out' } });
         const words = "Discover the companies and creators who bring you the best travel experiences. From boutique hotels to local guides, our partners are dedicated to providing you with unforgettable adventures around the world.".split(' ');
         words.forEach((word, index) => {
             tl.fromTo(`#word-${index}`, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, `+=${index * 0.05}`);
@@ -63,7 +69,8 @@ export default function Team() {
       const utterance = new SpeechSynthesisUtterance(text);
       speechSynthesis.speak(utterance);
     };
-
+   
+  
     return (
 <div className="bg-white">
         <header className="absolute inset-x-0 top-0 z-50">
@@ -85,9 +92,12 @@ export default function Team() {
               ))}
             </div>
             <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-              <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-                Log in <span aria-hidden="true">&rarr;</span>
-              </a>
+              <button
+         onClick={handleSignIn}
+          className="flex-none rounded-full bg-purple-700 px-3.5 py-1 text-sm font-semibold text-white shadow-sm hover:bg-purple-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+          >
+          Log In <span aria-hidden="true">&rarr;</span>
+        </button>
             </div>
           </nav>
         </header>
@@ -96,6 +106,7 @@ export default function Team() {
   <div className="relative isolate px-6  lg:px-8">
   
           {/* el zina l al ajneb ml fouk */}
+          <div>
           <div
             className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true" >
             <div
@@ -106,7 +117,30 @@ export default function Team() {
               }}
             />
           </div>
-       
+          <div
+          className="absolute inset-x-0 -z-10 transform-gpu overflow-hidden blur-3xl "
+          aria-hidden="true"
+        >
+          <div
+            className="relative left-[calc(80%+3rem)] aspect-[1155/678] w-[90.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
+            style={{
+              clipPath:
+                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+            }}
+          />
+        </div>
+        <div
+          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true" >
+          <div
+            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+            style={{
+              clipPath:
+                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+            }}
+          />
+        </div>
+        </div>
+        {/* Contenu*/}
     <div className="py-24 sm:py-32">
       <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
         <div className="max-w-2xl" style={{marginTop:'70px'}}>
@@ -171,7 +205,7 @@ export default function Team() {
 
   </div>
 
-            
+             {/* footer*/}
     <footer className="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800">
     <div className="mx-auto max-w-screen-xl text-center">
       <p className="my-1 text-gray-500 dark:text-gray-400">  Explore our collection of travel guides, exciting itineraries, 
@@ -256,17 +290,3 @@ export default function Team() {
     )
   }
   
-//     useEffect(() => {
-//       const tl = gsap.timeline({ defaults: { duration: 0.3, ease: 'power1.out' } });
-//       const words = "Discover the companies and creators who bring you the best travel experiences. From boutique hotels to local guides, our partners are dedicated to providing you with unforgettable adventures around the world.".split(' ');
-//       words.forEach((word, index) => {
-//           tl.fromTo(`#word-${index}`, { opacity: 0, y: 20 }, { opacity: 1, y: 0, onComplete: playText  }, `+=${index * 0.05}`,);
-//       });
-//       tl.play();
-//   }, []);
-    
-//   const playText = () => {
-//     const text = "Discover the companies and creators who bring you the best travel experiences. From boutique hotels to local guides, our partners are dedicated to providing you with unforgettable adventures around the world.";
-//     const utterance = new SpeechSynthesisUtterance(text);
-//     speechSynthesis.speak(utterance);
-// };

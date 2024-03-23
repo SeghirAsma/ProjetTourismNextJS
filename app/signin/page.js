@@ -1,32 +1,47 @@
 'use client'
-import './StylesCss/default.css';
-import { XMarkIcon } from '@heroicons/react/20/solid'
+import '../StylesCss/default.css';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { useRouter } from 'next/navigation'
-
-
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Avatar from '@mui/material/Avatar';
 
 export default function Example() {
-  const navigation = [
-    { name: 'Home', href: '/content' },
-    { name: 'About Us', href: '/about' },
-    { name: 'Contact Us', href: '/contact' },
-    { name: 'Our Partners', href: '/team' },
-  ]
-  const router = useRouter();
+    const router = useRouter();
 
-
-  const handleSignIn = () => {
-    router.push('/signin'); 
-  };
-
-  const handleGetStarted = () => {
-    router.push('/content'); 
-  };
-  
-  return (
-    
-    <div className="bg-white">
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const handleSignUP = () => {
+      router.push('/signup'); 
+    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const response = await axios.post('http://localhost:8099/api/utilisateurs/loginUser', {
+            email,
+            password,
+        });
+        // const accessToken = response.data.token;
+        // localStorage.setItem('token', accessToken);
+        // console.log("token", accessToken)
+        
+        setShowSnackbar(true);
+        setTimeout(() => {
+            router.push('/content');
+        //   setShowSnackbar(false);
+        }, 1300); 
+           
       
+    } catch (error) {
+        console.error('Authentication Failed', error);
+    }
+  
+  };
+
+
+    return (
+      <>
       <header className="absolute inset-x-0 top-0 z-50">
         <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
           <div className="flex lg:flex-1">
@@ -38,33 +53,20 @@ export default function Example() {
               />
             </a>
           </div>
-          <div className="hidden lg:flex lg:gap-x-12">
-            {navigation.map((item) => (
-              <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900">
-                {item.name}
-              </a>
-            ))}
-          </div>
+         
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            {/* <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-              Log in <span aria-hidden="true">&rarr;</span>
-            </a> */}
              <button
-         onClick={handleSignIn}
+          onClick={handleSignUP}
           className="flex-none rounded-full bg-purple-700 px-3.5 py-1 text-sm font-semibold text-white shadow-sm hover:bg-purple-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
           >
-          Log In <span aria-hidden="true">&rarr;</span>
+          Sign Up <span aria-hidden="true">&rarr;</span>
         </button>
           </div>
         </nav>
       </header>
-
       
-    <div className="relative isolate px-6  lg:px-8">
-
-        {/* el zina l al ajneb ml fouk */}
-        <div>
-        <div
+       {/* el zina l al ajneb ml fouk */}
+       <div
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true" >
           <div
             className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
@@ -74,16 +76,7 @@ export default function Example() {
             }}
           />
         </div>
-        <div
-          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true" >
-          <div
-            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-            }}
-          />
-        </div>
+         {/* el zina l al ajneb ml louta */}
         <div
           className="absolute inset-x-0 -z-10 transform-gpu overflow-hidden blur-3xl "
           aria-hidden="true"
@@ -96,69 +89,88 @@ export default function Example() {
             }}
           />
         </div>
-        </div>
-        {/* Contenu page default */ }
-        <div className=" flex">
-      <div className="flex-none w-1/2">
-        <img
-          className="h-2/2  w-2/2 "
-          src="/logotou.png"
-          alt="Your Company Logo"
-        />
-      </div>
-      <div className="flex flex-col justify-center w-1/2 px-6 lg:px-2">
-        <div className="relative isolate">
-          <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl" style={{color:'rgb(124, 18, 224)'}}>
-                Discover Incredible Tourism Content
-              </h1>
-              <p className="mt-6 text-lg leading-8 text-gray-600">
-                Explore unique destinations and uncover unforgettable adventures. Whether you're seeking tranquil beaches, 
-                majestic mountains, or vibrant cityscapes, our platform connects you with curated travel content from 
-                passionate creators worldwide.
-              </p>
-              <div className="mt-10 flex items-center justify-center gap-x-6">
-              <button className="button" style={{marginRight: '10px'}} onClick={handleGetStarted}>
-            Get started </button>                
-            <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-                  Learn more <span aria-hidden="true">→</span>
-                </a>
-              </div>
-            
-              <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-                <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20" style={{marginTop:'55px'}}>
-                  Content Tourism.{' '}
-                </div>
-              </div>
-            </div>   
+        
+        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Avatar sx={{ m: 1, bgcolor: 'secondary.main', width: 45, height: 45  }}>
+        <LockOutlinedIcon />
+      </Avatar>
+    </div>
+          <h3 className="mt-2 text-center text-3xl font-bold leading-9 tracking-tight text-gray-900"
+           style={{color:'#8324b6'}}>
+              Sign in to your account
+            </h3>
           </div>
-        </div>   
-      </div>
-    </div>
-   
-
-        {/* el zina l al ajneb ml louta */}
-        <div
-          className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
-          aria-hidden="true"
-        >
-          <div
-            className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-            }}
-          />
+  
+          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <form onSubmit={handleSubmit} className="space-y-5" >
+              <div className="sm:col-span-2">
+            <label htmlFor="email" className="block text-sm font-semibold leading-6 text-gray-900">
+            Email address
+            </label>
+            <div className="mt-2.5">
+              <input type="email" name="email" id="email" autoComplete="email" placeholder='Enter your Email Address'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} 
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+  
+             
+            <div className="sm:col-span-2">
+            <div className="flex items-center justify-between">
+                  <label htmlFor="password" className="block text-sm font-semibold leading-6 text-gray-900">
+                    Password
+                  </label>
+                  <div className="text-sm">
+                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                      Forgot password?
+                    </a>
+                  </div>
+                </div>
+            <div className="mt-2.5">
+              <input type="Password" name="Password" id="Password" autoComplete="organization" placeholder='Enter your Password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+              <div>
+                 <button className="button flex w-full justify-center px-3 py-2 text-m " style={{marginRight: '10px'}}>
+                 Sign in</button>  
+              </div>
+            </form>
+  
+            <p className="mt-10 text-center text-sm text-gray-500">
+              Not a member?{' '}
+              <a href="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                Create your account
+              </a>
+            </p>
+            
+            {showSnackbar && (
+        <div className="fixed bottom-4 left-4 z-50">
+          <div className="max-w-sm w-full bg-purple-200 shadow-md rounded-lg overflow-hidden">
+            <div className="p-3">
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <p className="text-sm leading-tight text-white-800">Welcome to Our Content Tourism ! 😊</p>
+              </div>
+            </div>
+          </div>
         </div>
+      )}
 
 
-    </div>
-      
-    <footer className="p-4  dark:bg-gray-800">
+          </div>
+
+          <footer className="p-4 mt-12 dark:bg-gray-800 ">
     <div className="mx-auto max-w-screen-xl text-center">
-      <p className="my-1 text-gray-500 dark:text-gray-400">  Explore our collection of travel guides, exciting itineraries, 
-      and expert tips to plan your next adventures. </p> 
       <div className="container px-6 pt-6">
         <div className="mb-6 flex justify-center space-x-2">  
           <a href="https://www.facebook.com/"
@@ -229,9 +241,9 @@ export default function Example() {
       © {new Date().getFullYear()}-{new Date().getFullYear() + 1} Tourism_Content™. All Rights Reserved.</span>
   </div>
 </footer>
-
-    </div>
-  )
-}
-
+        </div>
+        
+      </>
+    )
+  }
  

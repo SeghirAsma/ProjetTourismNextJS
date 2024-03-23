@@ -1,36 +1,59 @@
 'use client'
-import './StylesCss/default.css';
-import { XMarkIcon } from '@heroicons/react/20/solid'
+import '../StylesCss/home.css';
+import axios from 'axios';
+import React , {useState, useEffect,useRef} from "react";
+import ReactPaginate from 'react-paginate';
 import { useRouter } from 'next/navigation'
-
-
-
-export default function Example() {
+export default function Home() {
   const navigation = [
     { name: 'Home', href: '/content' },
     { name: 'About Us', href: '/about' },
-    { name: 'Contact Us', href: '/contact' },
+    { name: 'Contact Us', href: '#' },
     { name: 'Our Partners', href: '/team' },
   ]
+  
+  const [videos, setVideos] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const usersPerPage = 5;
+  const pagesVisited = pageNumber * usersPerPage;
   const router = useRouter();
 
 
   const handleSignIn = () => {
     router.push('/signin'); 
   };
-
-  const handleGetStarted = () => {
-    router.push('/content'); 
-  };
+ 
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+       
+        const response = await axios.get(`http://localhost:8099/api/contenus/approved`);
+               const filteredContenus = response.data.filter((contenu => contenu.approved) );
+        // // setVideos(response.data);
+        setVideos(filteredContenus);
+        console.log("videos",filteredContenus )
   
+      } catch (error) {
+        console.error('Erreur lors du chargement des vidéos', error);
+      }
+    };
+    fetchVideos();
+  }, []);
+
+  
+
+
+
+  const pageCount = Math.ceil(videos.length / usersPerPage);
+  const changePage = ({ selected }) => {
+      setPageNumber(selected);
+  };
   return (
-    
     <div className="bg-white">
-      
       <header className="absolute inset-x-0 top-0 z-50">
         <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
           <div className="flex lg:flex-1">
-            <a href="/" className="-m-1.5 p-1.5">
+            <a href="/" >
               <img
                 className="h-12 w-auto"
                 src="/logotou.png"
@@ -38,6 +61,8 @@ export default function Example() {
               />
             </a>
           </div>
+       
+
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900">
@@ -46,10 +71,7 @@ export default function Example() {
             ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            {/* <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-              Log in <span aria-hidden="true">&rarr;</span>
-            </a> */}
-             <button
+          <button
          onClick={handleSignIn}
           className="flex-none rounded-full bg-purple-700 px-3.5 py-1 text-sm font-semibold text-white shadow-sm hover:bg-purple-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
           >
@@ -59,85 +81,66 @@ export default function Example() {
         </nav>
       </header>
 
-      
-    <div className="relative isolate px-6  lg:px-8">
 
-        {/* el zina l al ajneb ml fouk */}
-        <div>
-        <div
-          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true" >
-          <div
-            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-            }}
-          />
-        </div>
-        <div
-          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true" >
-          <div
-            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-            }}
-          />
-        </div>
-        <div
-          className="absolute inset-x-0 -z-10 transform-gpu overflow-hidden blur-3xl "
-          aria-hidden="true"
-        >
-          <div
-            className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-            }}
-          />
-        </div>
-        </div>
-        {/* Contenu page default */ }
-        <div className=" flex">
-      <div className="flex-none w-1/2">
-        <img
-          className="h-2/2  w-2/2 "
-          src="/logotou.png"
-          alt="Your Company Logo"
-        />
-      </div>
-      <div className="flex flex-col justify-center w-1/2 px-6 lg:px-2">
-        <div className="relative isolate">
-          <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl" style={{color:'rgb(124, 18, 224)'}}>
-                Discover Incredible Tourism Content
-              </h1>
-              <p className="mt-6 text-lg leading-8 text-gray-600">
-                Explore unique destinations and uncover unforgettable adventures. Whether you're seeking tranquil beaches, 
-                majestic mountains, or vibrant cityscapes, our platform connects you with curated travel content from 
-                passionate creators worldwide.
-              </p>
-              <div className="mt-10 flex items-center justify-center gap-x-6">
-              <button className="button" style={{marginRight: '10px'}} onClick={handleGetStarted}>
-            Get started </button>                
-            <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-                  Learn more <span aria-hidden="true">→</span>
-                </a>
-              </div>
-            
-              <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-                <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20" style={{marginTop:'55px'}}>
-                  Content Tourism.{' '}
-                </div>
-              </div>
-            </div>   
-          </div>
-        </div>   
-      </div>
-    </div>
+
    
+    <div className="relative isolate px-6  lg:px-8 ">
+        {/* el zina l al ajneb ml fouk */}
+        <div
+          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true" >
+          <div
+            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+            style={{
+              clipPath:
+                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+            }}
+          />
+        </div>
 
+      
+
+
+        <main className="flex-grow flex items-center justify-center overflow-hidden">
+        <div className="card-slider">
+          {videos.slice(pagesVisited, pagesVisited + usersPerPage).map((contenu, index) => (
+             <div key={index} className="card"> 
+              <div key={index} className="video-card">
+    <div className="video-info">
+      <h2 className="video-title">{contenu.titleContenu}</h2>
+      <p className="video-description">{contenu.descriptionContenu}</p>
+    </div>
+              {contenu.videoContenuUrl && (
+                <video  controls={true} playing="true" style={{ height: 'auto', width: '400px', alignItems: 'center' }}>
+                  <source src={`http://localhost:8099/api/contenus/videos/${encodeURIComponent(contenu.videoContenuUrl.split('/').pop())}` }type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              )}
+              <div className="card__content">
+                 
+              </div>
+            </div>
+            </div>
+          ))}
+
+
+        </div>
+      </main>
+ 
+
+
+    <div className="flex justify-end xl:col-span-4" >
+                <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    pageCount={pageCount}
+                    onPageChange={changePage}
+                    containerClassName={"pagination"}
+                    previousLinkClassName={"pagination__link"}
+                    nextLinkClassName={"pagination__link"}
+                    disabledClassName={"pagination__link--disabled"}
+                    activeClassName={"pagination__link--active"}
+                />
+            </div>
         {/* el zina l al ajneb ml louta */}
         <div
           className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
@@ -151,11 +154,19 @@ export default function Example() {
             }}
           />
         </div>
-
-
+       
+     
+       
+       
     </div>
+
+ 
+ 
       
-    <footer className="p-4  dark:bg-gray-800">
+      
+    {/* <footer className="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800"> */}
+    <footer className="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800">
+
     <div className="mx-auto max-w-screen-xl text-center">
       <p className="my-1 text-gray-500 dark:text-gray-400">  Explore our collection of travel guides, exciting itineraries, 
       and expert tips to plan your next adventures. </p> 
@@ -235,3 +246,4 @@ export default function Example() {
 }
 
  
+

@@ -1,0 +1,135 @@
+.card {
+    position: relative;
+    width: 400px;
+    height: 900px;
+    background-color: #fcf1ff;
+    background-image: radial-gradient(at 47% 69%, rgb(222, 158, 132) 0px, transparent 50%),
+    radial-gradient(at 9% 32%, rgb(171, 193, 245) 0px, transparent 50%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    perspective: 1000px;
+    box-shadow: 0 0 0 5px #ffffff80;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-top: 90px;
+  }
+
+
+  .card svg {
+    width: 48px;
+    fill: #333;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+  }
+  
+
+  .card:hover .card__content {
+    transform: rotateX(0deg);
+  }
+  
+  .card__title {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+    font-weight: 700; 
+     
+  }
+/*   
+  .card:hover svg {
+    scale: 0;
+  } */
+  
+  .card__description {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: #777777;
+    line-height: 1.4;
+  } 
+
+  div.tes1t  div{
+    width: auto;
+    height: auto;
+  }
+
+
+
+.video-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ 
+ 
+}
+
+ .video-info {
+  /* background-color: #fcf1ff; */
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  /* box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2); */
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+} 
+
+.video-info:hover {
+  transform: translateY(-5px);
+}
+
+.video-title {
+  margin: auto; /* Centre le texte verticalement */
+  text-align: center; /* Centre le texte horizontalement */
+  font-size: 26px;
+  color: #130c99;
+  font-weight: 700;
+  
+}
+
+.video-description {
+  margin: auto; /* Centre le texte verticalement */
+  text-align: center; /* Centre le texte horizontalement */
+  font-size: 16px;
+  color: #777777;
+  line-height: 1.4;
+}
+
+
+  
+   /*pagination*/
+
+   .pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination__link {
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.25rem;
+    border-radius: 0.25rem;
+    background-color: #edf2f7;
+    color: #4a5568;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination__link:hover {
+    background-color: #cbd5e0;
+    color: #2d3748;
+}
+
+.pagination__link--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination__link--active {
+    background-color: #aa66ea;
+    color: #ffffff;
+}
+
