@@ -1,28 +1,54 @@
 'use client'
 import '../StylesCss/home.css';
+import '../StylesCss/default.css';
+import '../StylesCss/testing.css';
+
 import axios from 'axios';
 import React , {useState, useEffect} from "react";
 import ReactPaginate from 'react-paginate';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/navigation'
 import { Button } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import RedoRoundedIcon from '@mui/icons-material/RedoRounded';
 import UndoSharpIcon from '@mui/icons-material/UndoSharp';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import ListSubheader from '@mui/material/ListSubheader';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+import ExtensionIcon from '@mui/icons-material/Extension';
+import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon';
+import DnsIcon from '@mui/icons-material/Dns';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import ChildCareIcon from '@mui/icons-material/ChildCare';
+import FormatSizeIcon from '@mui/icons-material/FormatSize';
+import DriveEtaIcon from '@mui/icons-material/DriveEta';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import StyleIcon from '@mui/icons-material/Style';
+
+import Card from "../card/page.js";
+
 export default function Home() {
+
+  dayjs.extend(utc);
   const navigation = [
     { name: 'Home', href: '/content' },
     { name: 'About Us', href: '/about' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'Our Partners', href: '/team' },
   ]
-  
   const [programs, setPrograms] = useState([]); 
-
-    const [pageNumber, setPageNumber] = useState(0);
+  const [selectedProgram, setSelectedProgram] = useState(null);
+  const [openItem, setOpenItem] = useState({}); 
+  const [pageNumber, setPageNumber] = useState(0);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const usersPerPage = 5;
   const ITEM_SIZE = 1; // Number of items per page
   const pagesVisited = pageNumber * usersPerPage;
@@ -34,30 +60,55 @@ export default function Home() {
         router.push('/signin'); 
       };
  
-  useEffect(() => {
-    const getAllPrograms = async () => {
-        try {
-            const response = await axios.get('http://localhost:8099/api/programs/approved'); 
-            setPrograms(response.data.map(program => ({ ...program, currentPage: 1 })));
-           console.log("data", response.data)  
-        } catch (error) {
-            console.error('Error fetching programs:', error);
-        } 
+      useEffect(() => {
+        const getAllPrograms = async () => {
+            try {
+                const response = await axios.get('http://localhost:8099/api/programs/approved'); 
+                setPrograms(response.data.map(program => ({ ...program, currentPage: 1 })));
+              console.log("data", response.data)  
+            } catch (error) {
+                console.error('Error fetching programs:', error);
+            } 
+        };
+        getAllPrograms();
+    }, []);
+
+
+    const handleClick = (itemId) => {
+      setOpenItem((prevState) => ({
+        ...prevState,
+        [itemId]: !prevState[itemId] 
+      }));
     };
-    getAllPrograms();
-}, []);
+
+    const onItemChange = (programIndex, page) => {
+      const updatedPrograms = [...programs];
+      updatedPrograms[programIndex].currentPage = page ;
+      setPrograms(updatedPrograms);
+    };
+
+    const changePage = ({ selected }) => {
+        setPageNumber(selected);
+    };
 
 
 
-const onItemChange = (programIndex, page) => {
-  const updatedPrograms = [...programs];
-  updatedPrograms[programIndex].currentPage = page ;
-  setPrograms(updatedPrograms);
-};
-
-  const changePage = ({ selected }) => {
-      setPageNumber(selected);
+  const handleDialogOpen = (program) => {
+    setSelectedProgram(program);
+    setIsDialogOpen(true);
   };
+
+  const handleDialogClose = () => {
+    setSelectedProgram(null);
+    setIsDialogOpen(false);
+  };
+
+  const handleReserve = (program) => {
+    // Envoyer les données du programme à une fonction de traitement
+    // Par exemple :
+    console.log("Programme réservé :", program);
+    setSelectedProgram(program);
+  }
 
   return (
     <div className="bg-white">
@@ -91,8 +142,6 @@ const onItemChange = (programIndex, page) => {
           </div>
         </nav>
       </header>
-
-
 
    
     <div className="relative isolate px-6  lg:px-8 ">
@@ -142,10 +191,8 @@ const onItemChange = (programIndex, page) => {
             <img   className="inline-block h-12 w-12 rounded-full ring-2 ring-white absolute top-0 left-0 m-4"
             src={`http://localhost:8099/api/users/images/${encodeURIComponent(program.userEntity.profileImageUrl.split('/').pop())}`} alt="Profile Image" />
              )}
-             
-           
-          <div className="ml-5 absolute left-14 video-description">
-          
+                  
+          <div className="ml-5 absolute left-14 video-description">    
           <p> {program.userEntity ? program.userEntity.lastName.toUpperCase() : ''} {program.userEntity ? program.userEntity.firstName : ''}  
           </p>
          
@@ -154,11 +201,16 @@ const onItemChange = (programIndex, page) => {
              <div className="video-info">
                     <h2 className="video-title mt-3"> {program.referenceProgram} </h2> 
                     <p className="video-description">{program.nameProgram} 
-                    <Button variant="text" style={{ color: 'orange'}} className='left-22'>
-                        <VisibilityIcon />
-                    </Button></p>
+                    <Button variant="text" style={{ color: 'orange'}} className='left-22'  
+                 onClick={() => handleDialogOpen(program)}>
+                     <VisibilityIcon /> 
+                    </Button>
+
+        
+                    </p>
+                    
              </div>
-             
+           
              
               {program.contents.slice((program.currentPage - 1) * ITEM_SIZE, ((program.currentPage - 1) * ITEM_SIZE) + ITEM_SIZE)
                         .map((content, contentIndex) => (
@@ -181,7 +233,7 @@ const onItemChange = (programIndex, page) => {
             <RedoRoundedIcon />
             </button> 
           </div>
-           
+        
               <div className="card__content">
               </div>
 
@@ -191,8 +243,135 @@ const onItemChange = (programIndex, page) => {
           ))}
         </div>
       </main>
+      
  
+     
+    <Dialog open={isDialogOpen} onClose={handleDialogClose}    
+    aria-labelledby="scroll-dialog-title" aria-describedby="scroll-dialog-description" >
 
+      <List
+          sx={{ width: '600px', height: 'auto', bgcolor: 'background.paper' }}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader" style={{backgroundColor:'#f2e9f5'}}>
+             Program Details
+            </ListSubheader>
+          }
+        >
+          
+           {selectedProgram && (
+                           <>
+                          
+                  <div >
+          <ListItemButton>
+            <ListItemIcon>
+              <DnsIcon style={{color:'rgb(118, 56, 176)'}}/>
+            </ListItemIcon>
+            <ListItemText primary="Reference Program" style={{color:'rgb(118, 56, 176)'}} /> {selectedProgram.referenceProgram}
+          </ListItemButton>
+                  </div>
+
+                  <div>
+                    <ListItemButton>
+            <ListItemIcon>
+              <CatchingPokemonIcon style={{color:'rgb(118, 56, 176)'}}/>
+            </ListItemIcon>
+            <ListItemText primary="Name Program" style={{color:'rgb(118, 56, 176)'}} />  {selectedProgram.nameProgram}
+          </ListItemButton>
+                  </div> 
+                  
+                  {selectedProgram.items && (
+                    <div>
+                      {selectedProgram.items.map((item) => (
+                        <div key={item.idItem}>
+
+            <ListItemButton onClick={() => handleClick(item.idItem)}>
+            <ListItemIcon>
+              <ExtensionIcon style={{color:'rgb(118, 56, 176)'}}/>
+            </ListItemIcon>
+            <ListItemText primary="Items" style={{color:'rgb(118, 56, 176)'}} />
+            {openItem[item.idItem] ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+
+          <Collapse in={openItem[item.idItem]} timeout="auto" unmountOnExit>
+
+            <List component="div" disablePadding>
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <ChildCareIcon style={{color:'#88105c'}} />
+                </ListItemIcon>
+                <ListItemText primary="Name" /> {item.name}
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <FormatSizeIcon style={{color:'#d7496a'}}/>
+                </ListItemIcon>
+                <ListItemText primary="Type" /> {item.type}
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <DriveEtaIcon style={{color:'#6dd749'}} />
+                </ListItemIcon>
+                <ListItemText primary="Destination" /> {item.destination}
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <DateRangeIcon style={{color:'#19aeb9'}} />
+                </ListItemIcon>
+                <ListItemText primary="Date Début" /> {dayjs.utc(item.dateDebut).format('DD-MM-YYYY')} 
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <DateRangeIcon style={{color:'#19aeb9'}}/>
+                </ListItemIcon>
+              <ListItemText primary="Date Fin" /> {dayjs.utc(item.dateFin).format('DD-MM-YYYY')}  
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <AttachMoneyIcon style={{color:'#9a9a1f'}}/>
+                </ListItemIcon>
+              <ListItemText primary="Price" /> {item.price}
+              </ListItemButton>
+
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <StyleIcon style={{color:'#f6aa27'}}/>
+                </ListItemIcon>
+              <ListItemText primary="Required" /> {item.required ? 'Obligatoire' : 'Facultatif'} 
+              </ListItemButton>
+
+            </List>
+          </Collapse>
+                      </div>
+                      ))}
+                    </div>
+                  )}
+                 
+                </>
+              )}    
+         
+        </List>
+
+      
+        <DialogActions>
+        <button className="button flex  justify-center px-5 py-1.5 text-m"  
+        onClick={() => handleReserve(selectedProgram)}
+        // onClick={() => {
+        //   handleDialogClose();
+        //   addToReservedData(selectedProgram); 
+        // }}
+        >Reserve</button>
+          <button className="button flex  justify-center px-5 py-1.5 text-m"  onClick={handleDialogClose}>Close</button>
+        </DialogActions>
+        </Dialog>
+
+        {/* <Testing reservedData={reservedData} /> */}
 
         {/* pagination de programme par page */}
           <div className="flex justify-end xl:col-span-4" >
@@ -230,7 +409,9 @@ const onItemChange = (programIndex, page) => {
        
     </div>
 
- 
+
+
+  
       
     {/* <footer className="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800"> */}
         <footer className="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800">
@@ -314,4 +495,3 @@ const onItemChange = (programIndex, page) => {
 }
 
  
-

@@ -16,7 +16,6 @@
     margin-top: 90px;
   }
 
-
   .card svg {
     width: 48px;
     fill: #333;
@@ -133,3 +132,12 @@
     color: #ffffff;
 }
 
+/* program */
+.program-title {
+  margin: auto; /* Centre le texte verticalement */
+  text-align: center; /* Centre le texte horizontalement */
+  font-size: 26px;
+  color: rgb(81, 16, 141);
+  font-weight: 700;
+  
+}

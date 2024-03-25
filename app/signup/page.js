@@ -36,7 +36,7 @@ export default function Example() {
         setTimeout(() => {
             router.push('/signin');
         //   setShowSnackbar(false);
-        }, 1300); 
+        }, 1500); 
            
       
     } catch (error) {

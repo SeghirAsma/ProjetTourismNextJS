@@ -24,3 +24,18 @@
 // };
 
 // export default Card;
+// Dans le composant ProgramDetails.jsx
+import React from 'react';
+import Content from "../content/page.js";
+
+const ProgramDetails = ({ program }) => {
+  return (
+    <div>
+      {/* <p>Reference Program: {program.referenceProgram}</p>
+      <p>Name Program: {program.nameProgram}</p> */}
+      {/* Autres détails du programme à afficher */}
+    </div>
+  );
+}
+
+export default ProgramDetails;
